@@ -6,7 +6,8 @@
     "build": "slidev build slides.md --out dist",
     "export": "slidev export slides.md",
     "lint": "node scripts/lint-deck.mjs slides.md",
-    "overflow": "node scripts/check-overflow.mjs --url http://localhost:3031"
+    "overflow": "node scripts/check-overflow.mjs --url http://localhost:3031",
+    "test": "node --test scripts/"
   },
   "devDependencies": {
     "@slidev/cli": "^0.50.0",

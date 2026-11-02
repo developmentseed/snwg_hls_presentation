@@ -448,12 +448,12 @@ routeAlias: cost-table
 <div class="col">
   <div class="stat"><span class="n">~100×</span></div>
   <p style="font-size:.85rem">cheaper to orchestrate the same 15,000 granules a day.</p>
-  <p style="font-size:.75rem;color:var(--mute)">The 2025 bill agrees: Step Functions $12.4k and RDS $8.3k.</p>
+  <p style="font-size:.75rem;color:var(--mute)">2025 bill: Step Functions plus RDS came to about $20.7k, in line with the model.</p>
 </div>
 </div>
 
 <!--
-Here is what that means in dollars, line by line. The current system spends about $15,518 a year on Step Functions and $4,375 on the database, plus small amounts on Lambda and on S3 calls that poll for ancillary data: about $20,160 a year in total. The new design spends about $180 a year storing its log in S3 and about $15 on queues and events, roughly $200 a year. That is about a hundred times cheaper to orchestrate the same 15,000 granules a day. These are modeled figures from our cost analysis, and the 2025 bill backs them up: Step Functions cost $12.4k and the database $8.3k last year. I want to be honest about scale: twenty thousand dollars is not the biggest line in our budget. The bigger prize is what this does to reprocessing, which is two slides from now.
+Here is what that means in dollars, line by line. The current system spends about $15,518 a year on Step Functions and $4,375 on the database, plus small amounts on Lambda and on S3 calls that poll for ancillary data: about $20,160 a year in total. The new design spends about $180 a year storing its log in S3 and about $15 on queues and events, roughly $200 a year. That is about a hundred times cheaper to orchestrate the same 15,000 granules a day. These are modeled figures from our cost analysis. On the 2025 bill, Step Functions and the database together came to about $20.7k, in line with the model; the split differs because database costs fell early in the year. I want to be honest about scale: twenty thousand dollars is not the biggest line in our budget. The bigger prize is what this does to reprocessing, which is two slides from now.
 
 Sources: hls-nextgen-orchestration docs/cost-analysis.md (Scheduled/Poll vs Event-Driven comparison); HLS_MCP_costs_breakdown_2025.csv (Step Functions $12,408, RDS $8,266).
 -->
@@ -609,16 +609,16 @@ routeAlias: patterns
   <div class="head">What we see</div><div></div><div class="head">What HLS learned</div>
   <div class="pat"><b>Whole granules copied</b> to local disk, sometimes more than once</div><div class="arr">→</div><div class="les"><b>Read only the bytes you need</b>, straight from cloud-optimized sources</div>
   <div class="pat"><b>Long single-step jobs</b> forced onto on-demand instances</div><div class="arr">→</div><div class="les"><b>Split jobs</b> so a Spot interruption costs minutes, not hours</div>
-  <div class="pat"><b>Always-on servers and databases</b>, sometimes two orchestrators at once</div><div class="arr">→</div><div class="les"><b>Event-driven, scale to zero</b>: pay only when something arrives</div>
+  <div class="pat"><b>Always-on servers and databases</b>, paid for while idle</div><div class="arr">→</div><div class="les"><b>Event-driven, scale to zero</b>: pay only when something arrives</div>
   <div class="pat"><b>Legacy Fortran or C</b> wrapped in layers of Python</div><div class="arr">→</div><div class="les"><b>Port with agents</b>, held to a validation suite</div>
   <div class="pat"><b>Homemade audit scripts</b> to check what was produced</div><div class="arr">→</div><div class="les"><b>An append-only log</b> you can query</div>
   <div class="pat"><b>Reprocessing with no cost estimate</b> up front</div><div class="arr">→</div><div class="les"><b>Model the cost</b> before you run the campaign</div>
 </div>
 
-<p class="foot-note">Drawn from public code and documentation across several solutions. Not specific to any one team.</p>
+<p class="foot-note">Patterns, not assessments of any one team.</p>
 
 <!--
-Here are six patterns we found looking across public code and documentation for SNWG solutions, each paired with what HLS learned. First, whole granules copied to local disk before processing, sometimes more than once; in one documented case downloading took longer than processing. The lesson is to read only the bytes you need from cloud-optimized sources. Second, long single-step jobs that end up on on-demand instances because an interruption would waste too much work; split the job and Spot becomes safe. Third, always-on control servers and databases, and in one case two orchestration systems running side by side; event-driven designs that scale to zero avoid paying for idle time. Fourth, legacy Fortran or C wrapped in layers of Python, which is exactly where we were with LaSRC. Fifth, homemade scripts to check what was produced, which an append-only log answers by design. Sixth, reprocessing campaigns with no published cost estimate; model it first, the way we did.
+Here are six patterns we found looking across public code and documentation for SNWG solutions, each paired with what HLS learned. First, whole granules copied to local disk before processing, sometimes more than once. The lesson is to read only the bytes you need from cloud-optimized sources. Second, long single-step jobs that end up on on-demand instances because an interruption would waste too much work; split the job and Spot becomes safe. Third, always-on control servers and databases that are paid for while idle; event-driven designs that scale to zero avoid paying for idle time. Fourth, legacy Fortran or C wrapped in layers of Python, which is exactly where we were with LaSRC. Fifth, homemade scripts to check what was produced, which an append-only log answers by design. Sixth, reprocessing campaigns with no published cost estimate; model it first, the way we did.
 
 Sources: docs/research/snwg-solutions.md (patterns 1 to 7, with evidence and confidence levels).
 -->
@@ -693,14 +693,14 @@ routeAlias: takeaways
 ## What we'd like you to take away
 
 <div class="ask"><div class="num">1</div><div><h3>Measure first</h3><p>Know your cost per granule. You cannot reduce what you have not measured.</p></div></div>
-<div class="ask"><div class="num">2</div><div><h3>Pay for events, not for waiting</h3><p>For HLS, orchestration fell from about $20,160 to about $200 a year, and reprocessing from $55–85k to about $4.1k.</p></div></div>
+<div class="ask"><div class="num">2</div><div><h3>Pay for events, not for waiting</h3><p>For HLS, orchestration is modeled to fall from about $20,160 to about $200 a year, and reprocessing from $55–85k to about $4.1k.</p></div></div>
 <div class="ask"><div class="num">3</div><div><h3>Legacy science code is now affordable to modernize</h3><p>AI agents made a 5–6 month port practical, but only because a validation suite proved every result.</p></div></div>
 <div class="ask"><div class="num">4</div><div><h3>Talk to us</h3><p>We can share our designs, cost models and validation tooling.</p>
   <div class="todo"><div class="tag">Sean: fill in</div><p>What exactly we offer (reviews, office hours, shared templates) and contact details.</p></div>
 </div></div>
 
 <!--
-Four things to take away. First, measure. Know your cost per granule, because you cannot reduce what you have not measured. Second, pay for events, not for waiting: for HLS that took orchestration from about $20,160 a year to about $200, and a full reprocessing from $55–85k to about $4.1k. Third, legacy science code is now affordable to modernize. AI agents turned a five to six month port into something we could actually prioritize, but only because we had a validation suite that proved every result; the agents supplied speed, the suite supplied trust. And fourth, talk to us. Everything in this talk, the designs, the cost models and the validation tooling, we are happy to share, and we would genuinely like to help other teams avoid the problems we spent six years learning about. Thank you.
+Four things to take away. First, measure. Know your cost per granule, because you cannot reduce what you have not measured. Second, pay for events, not for waiting: for HLS our cost model takes orchestration from about $20,160 a year to about $200, and a full reprocessing from $55–85k to about $4.1k. Those are modeled figures; the rollout is under way. Third, legacy science code is now affordable to modernize. AI agents turned a five to six month port into something we could actually prioritize, but only because we had a validation suite that proved every result; the agents supplied speed, the suite supplied trust. And fourth, talk to us. Everything in this talk, the designs, the cost models and the validation tooling, we are happy to share, and we would genuinely like to help other teams avoid the problems we spent six years learning about. Thank you.
 
 Sources: summary of slides 10, 14, 16 and 8 to 9.
 -->

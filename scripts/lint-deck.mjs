@@ -4,6 +4,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { parse } from '@slidev/parser'
+import { publishProblems, bannedHit, forbiddenHit } from './deck-checks.mjs'
 
 const file = process.argv[2] ?? 'slides.md'
 const final = process.argv.includes('--final')
@@ -25,8 +26,6 @@ raw.split('\n').forEach((line, i) => {
   if (line.includes('—')) fail('-', 'deck', 'em-dash', `line ${i + 1}`)
 })
 
-const bannedRe = new RegExp(`\\b(${rules.banned.join('|')})\\b`)
-
 slides.forEach((slide, i) => {
   const n = i + 1
   const expected = rules.aliases[i]
@@ -41,13 +40,18 @@ slides.forEach((slide, i) => {
   if (words < 40) fail(n, alias, 'note', `${words} words, need at least 40`)
   if (!note.includes('Sources:')) fail(n, alias, 'note', 'missing "Sources:" line')
 
-  // (e) no attribution of other solutions
-  const noteHit = note.match(bannedRe)
-  if (noteHit) fail(n, alias, 'banned-name', `"${noteHit[1]}" in speaker note`)
-  if (rules.noNames.includes(expected)) {
-    const hit = slide.content.match(bannedRe)
-    if (hit) fail(n, alias, 'banned-name', `"${hit[1]}" in slide content`)
+  // (e) no attribution of other solutions: notes everywhere, content
+  // everywhere except the slides allowed to name downstream users
+  const noteHit = bannedHit(note, rules.banned)
+  if (noteHit) fail(n, alias, 'banned-name', `"${noteHit}" in speaker note`)
+  if (!rules.namesAllowed.includes(expected)) {
+    const hit = bannedHit(slide.content, rules.banned)
+    if (hit) fail(n, alias, 'banned-name', `"${hit}" in slide content`)
   }
+
+  // phrases that misstate the evidence on this slide
+  const said = forbiddenHit(`${slide.content}\n${note}`, rules.forbid[expected] ?? [])
+  if (said) fail(n, alias, 'forbidden', `"${said}"`)
 
   // (f) pinned figures
   for (const pin of rules.pins[expected] ?? []) {
@@ -56,10 +60,13 @@ slides.forEach((slide, i) => {
   }
 })
 
-// (g) publishing must be manual
-const workflow = path.join(root, '.github/workflows/deploy.yml')
-if (fs.existsSync(workflow) && /^\s*push:/m.test(fs.readFileSync(workflow, 'utf8')))
-  fail('-', 'deck', 'publish', '.github/workflows/deploy.yml triggers on push')
+// (g) publishing must be manual, in every workflow
+const workflows = path.join(root, '.github/workflows')
+for (const f of fs.existsSync(workflows) ? fs.readdirSync(workflows) : []) {
+  if (!/\.ya?ml$/.test(f)) continue
+  for (const p of publishProblems(fs.readFileSync(path.join(workflows, f), 'utf8')))
+    fail('-', 'deck', 'publish', `.github/workflows/${f} ${p}`)
+}
 
 if (failures.length) {
   console.log(failures.join('\n'))

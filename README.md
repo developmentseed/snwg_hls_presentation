@@ -68,12 +68,18 @@ then remove the box.
 
 - [ ] **Slide 7:** how long the agent-assisted port actually took (days or weeks).
 - [ ] **Slide 16:** the cost analysis gives $4.1k for reprocessing in one table
-      and $2.7k in another. Confirm which (the `reprocessing` pin in
-      `scripts/deck-rules.json` expects $4.1k).
+      and $2.7k in another. Confirm which. $4.1k also appears on slide 23
+      and in this README, and is pinned on both slides in
+      `scripts/deck-rules.json`; change all of them together.
 - [ ] **Slide 23:** what exactly we offer (reviews, office hours, shared
       templates) and contact details.
 
-Two open questions without a box on any slide:
+Three open questions without a box on any slide:
+
+- **Slide 20 rows 2, 3 and 5** (long jobs on on-demand instances, always-on
+  servers, homemade audit scripts) are evidenced by one team's public code
+  only (see `docs/research/snwg-solutions.md`). With that team in the room,
+  decide whether to keep, generalize or drop them.
 
 - **LaSRC share of runtime.** Slide 12 says LaSRC is "about half of
   Sentinel-2 runtime". Slide 10's $21–36k EC2 range assumes it. The
@@ -96,6 +102,7 @@ npm run dev        # http://localhost:3030
 ## Checks
 
 ```sh
+npm test                  # unit tests for the lint's checks
 npm run lint -- --final   # deck rules, see below
 npx slidev slides.md --port 3031 &
 npm run overflow          # nothing outside the frame, clipped, or too small
@@ -106,10 +113,12 @@ npm run overflow          # nothing outside the frame, clipped, or too small
 - exactly 23 slides, with their `routeAlias` values in order
 - every note has at least 40 words and a `Sources:` line
 - no em dashes
-- no other SNWG solution named in any note, or on the patterns and
-  self-check slides
-- the headline figures (pins) are present on their slides
-- the deploy workflow has no `push:` trigger
+- no other SNWG solution named in any note, or on any slide except 22
+  (case-insensitive, so repo slugs like `opera-sds-pcm` are caught too)
+- the headline figures (pins) are present on every slide that uses them
+- no phrase that misstates the evidence (`forbid` in the rules), e.g.
+  savings stated as already achieved
+- every workflow in `.github/workflows/` runs only on `workflow_dispatch`
 
 `scripts/check-overflow.mjs` (Playwright) loads each slide from the dev
 server. It reports elements outside the slide, content clipped by
