@@ -51,3 +51,21 @@
 .card.trigger { background: var(--navy); }
 .slidev-layout.odsi-layout .card.trigger h3 { color: #fff; }
 .slidev-layout.odsi-layout .card.trigger p { color: var(--ice); }
+
+/* Porting-loop diagram (slide 8). SVG text is sized here, not with the
+   font-size attribute, which the theme overrides. */
+svg.loop { display: block; width: 100%; height: auto; }
+svg.loop .box { fill: #F4F8FB; stroke: #C6D8E5; stroke-width: 1.5; }
+svg.loop .box.hot { fill: #EAF4F3; stroke: var(--teal); stroke-width: 2.5; }
+svg.loop .box.ok { fill: #ECF6F2; stroke: var(--green); stroke-width: 2; }
+svg.loop .ln { stroke: var(--teal); stroke-width: 2.5; fill: none; }
+svg.loop .ln.back { stroke: var(--coral); stroke-dasharray: 7 5; }
+svg.loop text { font-family: var(--sans); fill: var(--ink); }
+svg.loop .t { font-size: 17px; font-weight: 700; fill: var(--navy); }
+svg.loop .s { font-size: 13px; fill: var(--mute); }
+svg.loop .lbl { font-size: 14px; font-weight: 700; fill: var(--teal); }
+svg.loop .lbl.no { fill: var(--coral); }
+
+/* Compact list inside a card */
+.slidev-layout.odsi-layout ul.mini { margin: 0.3rem 0 0; padding-left: 1.1rem; }
+.slidev-layout.odsi-layout ul.mini li { font-size: 0.78rem; line-height: 1.35; margin: 0.12rem 0; }
