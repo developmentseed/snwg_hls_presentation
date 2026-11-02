@@ -588,8 +588,12 @@ routeAlias: snwg
 
 ## Applying this to other SNWG solutions
 
+What we would look for in any production system, and how we can help
+
 <!--
-TODO notes.
+That is the HLS story. For the last part I want to turn it around, because the reason we are in this room is not to show off HLS. It is that I suspect many of your solutions are paying for the same problems we were. I want to be careful here. Everything in this section comes from public code and documentation, it describes patterns rather than any one team, and I am not going to name anyone. If something sounds familiar, that is the point, and we would love to talk about it.
+
+Sources: docs/research/snwg-solutions.md.
 -->
 
 ---
@@ -601,8 +605,22 @@ routeAlias: patterns
 
 ## Patterns we see
 
+<div class="pairs mt-1">
+  <div class="head">What we see</div><div></div><div class="head">What HLS learned</div>
+  <div class="pat"><b>Whole granules copied</b> to local disk, sometimes more than once</div><div class="arr">→</div><div class="les"><b>Read only the bytes you need</b>, straight from cloud-optimized sources</div>
+  <div class="pat"><b>Long single-step jobs</b> forced onto on-demand instances</div><div class="arr">→</div><div class="les"><b>Split jobs</b> so a Spot interruption costs minutes, not hours</div>
+  <div class="pat"><b>Always-on servers and databases</b>, sometimes two orchestrators at once</div><div class="arr">→</div><div class="les"><b>Event-driven, scale to zero</b>: pay only when something arrives</div>
+  <div class="pat"><b>Legacy Fortran or C</b> wrapped in layers of Python</div><div class="arr">→</div><div class="les"><b>Port with agents</b>, held to a validation suite</div>
+  <div class="pat"><b>Homemade audit scripts</b> to check what was produced</div><div class="arr">→</div><div class="les"><b>An append-only log</b> you can query</div>
+  <div class="pat"><b>Reprocessing with no cost estimate</b> up front</div><div class="arr">→</div><div class="les"><b>Model the cost</b> before you run the campaign</div>
+</div>
+
+<p class="foot-note">Drawn from public code and documentation across several solutions. Not specific to any one team.</p>
+
 <!--
-TODO notes.
+Here are six patterns we found looking across public code and documentation for SNWG solutions, each paired with what HLS learned. First, whole granules copied to local disk before processing, sometimes more than once; in one documented case downloading took longer than processing. The lesson is to read only the bytes you need from cloud-optimized sources. Second, long single-step jobs that end up on on-demand instances because an interruption would waste too much work; split the job and Spot becomes safe. Third, always-on control servers and databases, and in one case two orchestration systems running side by side; event-driven designs that scale to zero avoid paying for idle time. Fourth, legacy Fortran or C wrapped in layers of Python, which is exactly where we were with LaSRC. Fifth, homemade scripts to check what was produced, which an append-only log answers by design. Sixth, reprocessing campaigns with no published cost estimate; model it first, the way we did.
+
+Sources: docs/research/snwg-solutions.md (patterns 1 to 7, with evidence and confidence levels).
 -->
 
 ---
@@ -614,8 +632,29 @@ routeAlias: self-check
 
 ## Questions to ask about your own system
 
+<div class="cols mt-1">
+<div class="col">
+<ul class="checklist">
+  <li>Do you know your <strong>cost per granule</strong>, and what a full reprocessing would cost?</li>
+  <li>Are you paying for anything <strong>while nothing is arriving</strong>?</li>
+  <li>Do you copy <strong>whole files</strong> when you only need some of the bytes?</li>
+</ul>
+</div>
+<div class="col">
+<ul class="checklist">
+  <li>Would a <strong>Spot interruption</strong> waste an hour of work?</li>
+  <li>If a granule went missing last month, could you <strong>prove it with one query</strong>?</li>
+  <li>Could you change your science code tomorrow and <strong>prove nothing broke</strong>?</li>
+</ul>
+</div>
+</div>
+
+<div class="band mt-4">If you answered "no" or "not sure" to any of these, <b>we have been there</b>, and we would be glad to compare notes.</div>
+
 <!--
-TODO notes.
+If you want something to take back to your team, here are six questions. Do you know your cost per granule, and what a full reprocessing would cost? Are you paying for anything while nothing is arriving: servers, databases, polling loops? Do you copy whole files when you only need some of the bytes? Would a Spot interruption waste an hour of work? If a granule went missing last month, could you prove it with one query? And could you change your science code tomorrow and prove that nothing broke? Two years ago HLS would have answered "no" or "not sure" to most of these. If that is where you are, we have been there, and we would be glad to compare notes.
+
+Sources: docs/research/snwg-solutions.md; the HLS lessons on the preceding slides.
 -->
 
 ---
@@ -627,8 +666,21 @@ routeAlias: downstream
 
 ## HLS gains carry downstream
 
+<div class="grid g3 mt-1">
+  <div class="card"><h3><span class="chip teal">→</span>OPERA</h3><p>DSWx-HLS surface water and DIST-HLS disturbance products are built from HLS.</p></div>
+  <div class="card"><h3><span class="chip teal">→</span>FIRMS-2G</h3><p>Burned area mapping uses the HLS vegetation indices.</p></div>
+  <div class="card"><h3><span class="chip teal">→</span>HLS-LST</h3><p>Land surface temperature builds on the HLS record.</p></div>
+</div>
+
+<div class="cols mt-4">
+<div class="col"><p style="font-size:.9rem;margin:0">When HLS gets <strong>faster, cheaper and more reliable</strong>, so does every product built on it. Lower HLS latency is lower latency for them.</p></div>
+<div class="col"><div class="band" style="margin:0">Newer solutions, such as <b>GABAN</b> and <b>MWOW</b>, can build these patterns in <b>from the start</b> rather than retrofit them later.</div></div>
+</div>
+
 <!--
-TODO notes.
+One more reason this matters beyond HLS. HLS is an input to other SNWG solutions: the surface water and disturbance products on the left, burned area mapping through the HLS vegetation indices, and land surface temperature. When HLS becomes faster, cheaper and more reliable, so does everything built on top of it, and any latency we take out of HLS comes straight out of theirs. And for solutions that are newer and still being built, the patterns in this talk are much cheaper to adopt at the start than to retrofit later, which is exactly what we are doing now, six years in.
+
+Sources: docs/research/snwg-solutions.md (Solutions downstream of HLS; Solutions with no public pipeline code).
 -->
 
 ---
@@ -640,6 +692,15 @@ routeAlias: takeaways
 
 ## What we'd like you to take away
 
+<div class="ask"><div class="num">1</div><div><h3>Measure first</h3><p>Know your cost per granule. You cannot reduce what you have not measured.</p></div></div>
+<div class="ask"><div class="num">2</div><div><h3>Pay for events, not for waiting</h3><p>For HLS, orchestration fell from about $20,160 to about $200 a year, and reprocessing from $55–85k to about $4.1k.</p></div></div>
+<div class="ask"><div class="num">3</div><div><h3>Legacy science code is now affordable to modernize</h3><p>AI agents made a 5–6 month port practical, but only because a validation suite proved every result.</p></div></div>
+<div class="ask"><div class="num">4</div><div><h3>Talk to us</h3><p>We can share our designs, cost models and validation tooling.</p>
+  <div class="todo"><div class="tag">Sean: fill in</div><p>What exactly we offer (reviews, office hours, shared templates) and contact details.</p></div>
+</div></div>
+
 <!--
-TODO notes.
+Four things to take away. First, measure. Know your cost per granule, because you cannot reduce what you have not measured. Second, pay for events, not for waiting: for HLS that took orchestration from about $20,160 a year to about $200, and a full reprocessing from $55–85k to about $4.1k. Third, legacy science code is now affordable to modernize. AI agents turned a five to six month port into something we could actually prioritize, but only because we had a validation suite that proved every result; the agents supplied speed, the suite supplied trust. And fourth, talk to us. Everything in this talk, the designs, the cost models and the validation tooling, we are happy to share, and we would genuinely like to help other teams avoid the problems we spent six years learning about. Thank you.
+
+Sources: summary of slides 10, 14, 16 and 8 to 9.
 -->
