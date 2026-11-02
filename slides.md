@@ -319,7 +319,7 @@ routeAlias: lasrc-results
     <div class="cell"><span class="n">100%</span><span class="k">of 353 granules within 5 DN on all 7 bands</span></div>
     <div class="cell"><span class="n">30%</span><span class="k">faster than the ESPA C code</span></div>
     <div class="cell"><span class="n">7%</span><span class="k">less memory</span></div>
-    <div class="cell"><span class="n warm">$21–36k</span><span class="k">a year in EC2, based on 2025 EC2 spend of $240k</span></div>
+    <div class="cell"><span class="n warm">$23–33k</span><span class="k">a year in EC2, based on 2025 EC2 spend of $240k</span></div>
   </div>
   <p style="font-size:.75rem;color:var(--mute);margin-top:.6rem">From targeted tweaks only. Structural performance work has not started.</p>
 </div>
@@ -330,9 +330,9 @@ routeAlias: lasrc-results
 </div>
 
 <!--
-Where are we now? All 353 granules in the reference set agree with the ESPA C output within the 5 DN threshold on all seven bands. Five HLS DN is 0.0005 reflectance, chosen with the science team. The plot on the right shows the per-granule differences for each band, flat at zero, far below the dashed threshold line. And the Rust code is 30% faster and uses 7% less memory. Those gains came from targeted tweaks only, while the priority was matching C exactly, so most of the performance opportunity is still ahead of us. What is that worth? HLS spent about $240k on EC2 compute in 2025. If LaSRC is about half of job runtime for both sensors, a 30% faster LaSRC takes about 15% off EC2, about $36k a year. If only Sentinel-2 benefits, about 58% of granules, it is 8.8%, about $21k a year. So, about $21–36k a year, before any further optimization. This assumes EC2 cost scales with job runtime and reads "30% faster" as 30% less LaSRC runtime; if it means 1.3 times the throughput, the range is about $16–28k.
+Where are we now? All 353 granules in the reference set agree with the ESPA C output within the 5 DN threshold on all seven bands. Five HLS DN is 0.0005 reflectance, chosen with the science team. The plot on the right shows the per-granule differences for each band, flat at zero, far below the dashed threshold line. And the Rust code is 30% faster and uses 7% less memory. Those gains came from targeted tweaks only, while the priority was matching C exactly, so most of the performance opportunity is still ahead of us. What is that worth? HLS spent about $240k on EC2 compute in 2025. We measured LaSRC at about 55% of Sentinel-2 compute and about 33% of Landsat compute. Weighted by volume, with Sentinel-2 about 58% of granules, that is about 45% of all compute, so a 30% faster LaSRC takes about 14% off EC2, about $33k a year. If only Sentinel-2 benefits, it is about 9.5%, about $23k a year. So, about $23–33k a year, before any further optimization. This assumes EC2 cost scales with job runtime and reads "30% faster" as 30% less LaSRC runtime; if it means 1.3 times the throughput, the range is about $18–25k.
 
-Sources: developmentseed/lasrc_rust_presentation (slides 21 to 23, validation run 2026-09-22); HLS_MCP_costs_breakdown_2025.csv (EC2-Instances $240,404); LaSRC share of runtime from hls-nextgen-orchestration PR 7 docs/orchestration-design.md.
+Sources: developmentseed/lasrc_rust_presentation (slides 21 to 23, validation run 2026-09-22); HLS_MCP_costs_breakdown_2025.csv (EC2-Instances $240,404); LaSRC compute share measured across HLS pipelines (Sentinel-2 54.6%, n=423,090; Landsat 32.8%, n=49,837).
 -->
 
 ---
@@ -372,7 +372,7 @@ routeAlias: hurts
 <div class="grid g2 mt-4" style="gap:.6rem">
   <div class="card"><h3><span class="chip coral">1</span>Granules silently dropped</h3><p>Database timeouts before submission drop the job; timeouts afterwards leave finished work unrecorded and never retried.</p></div>
   <div class="card"><h3><span class="chip coral">2</span>Polling cost and rate limits</h3><p>About 113 billed state transitions per granule, and AWS API limits at 10 to 20 thousand concurrent jobs.</p></div>
-  <div class="card"><h3><span class="chip coral">3</span>Spot risk on long jobs</h3><p>LaSRC is about half of Sentinel-2 runtime. An interruption late in a job throws away the most expensive work.</p></div>
+  <div class="card"><h3><span class="chip coral">3</span>Spot risk on long jobs</h3><p>LaSRC is about 55% of Sentinel-2 compute and a third of Landsat's. An interruption late in a job throws away the most expensive work.</p></div>
   <div class="card"><h3><span class="chip coral">4</span>History pruned away</h3><p>The audit trail needed for reprocessing and reconciliation is deleted to keep the database fast.</p></div>
 </div>
 

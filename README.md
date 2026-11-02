@@ -13,7 +13,7 @@ cutting cost in two places:
    coding agents was a 5–6 month job nobody could prioritize. With an
    automated validation suite (353 granules × 7 bands, all within 5 DN) as
    the check, it became practical. The result is 30% faster with 7% less
-   memory, worth about $21–36k a year in EC2.
+   memory, worth about $23–33k a year in EC2.
 2. **Next-generation infrastructure.** An event-driven design with S3 as the
    log replaces Step Functions polling and the RDS log database.
    Orchestration drops from about $20,160 a year to about $200. A full
@@ -74,16 +74,13 @@ then remove the box.
 - [ ] **Slide 23:** what exactly we offer (reviews, office hours, shared
       templates) and contact details.
 
-Three open questions without a box on any slide:
+Two open questions without a box on any slide:
 
 - **Slide 20 rows 2, 3 and 5** (long jobs on on-demand instances, always-on
   servers, homemade audit scripts) are evidenced by one team's public code
   only (see `docs/research/snwg-solutions.md`). With that team in the room,
   decide whether to keep, generalize or drop them.
 
-- **LaSRC share of runtime.** Slide 12 says LaSRC is "about half of
-  Sentinel-2 runtime". Slide 10's $21–36k EC2 range assumes it. The
-  Landsat share is unknown.
 - **The Jul→Dec drop in 2025 monthly spend.** The deck doesn't use it.
   If someone asks, know the cause.
 
