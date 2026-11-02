@@ -1,16 +1,30 @@
 {
-  "slideCount": 23,
+  "slideCount": 37,
   "aliases": [
     "title",
     "glance",
     "why-now",
     "goals",
     "lasrc",
+    "lasrc-sits",
+    "chose-espa",
     "science-vs-prod",
+    "espa-codebase",
+    "production-grade",
+    "community",
+    "why-rust",
     "five-months",
+    "agents",
     "loop",
-    "validation",
-    "lasrc-results",
+    "foundation",
+    "suite",
+    "suite-does",
+    "one-comparison",
+    "humans",
+    "four-classes",
+    "more-correct",
+    "where-now",
+    "whats-next",
     "infra",
     "hurts",
     "new-design",
@@ -51,15 +65,7 @@
       "$240k"
     ],
     "five-months": [
-      "5–6 months"
-    ],
-    "lasrc-results": [
-      "353",
-      "5 DN",
-      "30%",
-      "7%",
-      "$23–33k",
-      "$240k"
+      "5 to 6"
     ],
     "cost-table": [
       "$15,518",
@@ -87,6 +93,12 @@
       "$4.1k",
       "5–6 month",
       "modeled"
+    ],
+    "where-now": [
+      "353",
+      "5 DN",
+      "30%",
+      "7%"
     ]
   },
   "namesAllowed": [

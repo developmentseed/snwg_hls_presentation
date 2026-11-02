@@ -52,24 +52,6 @@
 .slidev-layout.odsi-layout .card.trigger h3 { color: #fff; }
 .slidev-layout.odsi-layout .card.trigger p { color: var(--ice); }
 
-/* Porting-loop diagram (slide 8). SVG text is sized here, not with the
-   font-size attribute, which the theme overrides. */
-svg.loop { display: block; width: 100%; height: auto; }
-svg.loop .box { fill: #F4F8FB; stroke: #C6D8E5; stroke-width: 1.5; }
-svg.loop .box.hot { fill: #EAF4F3; stroke: var(--teal); stroke-width: 2.5; }
-svg.loop .box.ok { fill: #ECF6F2; stroke: var(--green); stroke-width: 2; }
-svg.loop .ln { stroke: var(--teal); stroke-width: 2.5; fill: none; }
-svg.loop .ln.back { stroke: var(--coral); stroke-dasharray: 7 5; }
-svg.loop text { font-family: var(--sans); fill: var(--ink); }
-svg.loop .t { font-size: 17px; font-weight: 700; fill: var(--navy); }
-svg.loop .s { font-size: 13px; fill: var(--mute); }
-svg.loop .lbl { font-size: 14px; font-weight: 700; fill: var(--teal); }
-svg.loop .lbl.no { fill: var(--coral); }
-
-/* Compact list inside a card */
-.slidev-layout.odsi-layout ul.mini { margin: 0.3rem 0 0; padding-left: 1.1rem; }
-.slidev-layout.odsi-layout ul.mini li { font-size: 0.78rem; line-height: 1.35; margin: 0.12rem 0; }
-
 /* Row-of-boxes flow diagram (slides 12, 13):
    <div class="flowdgm"><div class="fbox"><b>Title</b><small>detail</small></div><div class="farrow">→</div>...</div> */
 .flowdgm { display: flex; align-items: stretch; gap: 0.35rem; }
@@ -153,3 +135,53 @@ svg.loop .lbl.no { fill: var(--coral); }
 .slidev-layout.odsi-dark .ask { margin: 0.4rem 0; padding: 0.55rem 0.9rem; }
 .slidev-layout.odsi-dark .ask .todo { margin-top: 0.4rem; padding: 0.4rem 0.7rem; }
 .slidev-layout.odsi-layout .ask .todo p { color: var(--ink); font-size: 0.78rem; }
+
+
+/* LaSRC slides copied verbatim from developmentseed/lasrc_rust_presentation.
+   Its CSS is scoped here under .lsrc, at its own scale: 30px on a 1280px
+   reveal.js canvas is 23px on this 980px canvas, so its em sizes carry over. */
+.slidev-layout.odsi-layout .lsrc { font-size: 23px; }
+.slidev-layout.odsi-layout .lsrc p, .slidev-layout.odsi-layout .lsrc li { font-size: 1em; line-height: 1.4; }
+.slidev-layout.odsi-layout .lsrc h3 { font-size: 1.05em; margin: .1em 0 .25em; }
+.slidev-layout.odsi-layout .lsrc .cols { display: flex; gap: .7em; align-items: stretch; }
+.slidev-layout.odsi-layout .lsrc .card { padding: .85em 1em; }
+.slidev-layout.odsi-layout .lsrc .card p { font-size: .62em; margin: 0; }
+.slidev-layout.odsi-layout .lsrc .chip { width: 1.5em; height: 1.5em; font-size: 1em; margin-bottom: .3em; }
+.chip.rust { background: #CE422B; }
+.slidev-layout.odsi-layout .lsrc .band { font-size: .6em; line-height: 1.35; padding: .7em .95em; margin-top: .5em; }
+.slidev-layout.odsi-layout .lsrc .muted-cap { color: var(--mute); font-size: .55em; font-style: italic; margin: .15em 0 0; }
+.slidev-layout.odsi-layout .lsrc .rowcards { display: flex; flex-direction: column; gap: .32em; }
+.slidev-layout.odsi-layout .lsrc .rowcards .card { padding: .5em .7em; }
+.slidev-layout.odsi-layout .lsrc .rowcards .card h3 { font-size: .66em; display: flex; align-items: center; gap: .4em; margin: 0 0 .15em; }
+.slidev-layout.odsi-layout .lsrc .rowcards .card .chip { width: 1.15em; height: 1.15em; font-size: .85em; margin: 0; flex: none; }
+.slidev-layout.odsi-layout .lsrc .rowcards .card p { font-size: .52em; line-height: 1.3; }
+.slidev-layout.odsi-layout .lsrc .ba { gap: .7em; }
+.slidev-layout.odsi-layout .lsrc .ba .panel { padding: .85em 1.05em; }
+.slidev-layout.odsi-layout .lsrc .ba h3 { margin: .1em 0 .4em; }
+.slidev-layout.odsi-layout .lsrc .ba ul { margin: 0; padding-left: 1.1em; }
+.slidev-layout.odsi-layout .lsrc .ba li { font-size: .6em; margin: .32em 0; }
+.slidev-layout.odsi-layout .lsrc .arrowmid { font-size: 1.6em; }
+.slidev-layout.odsi-layout .lsrc .grid { display: grid; gap: .45em; }
+.slidev-layout.odsi-layout .lsrc .grid .card { padding: .6em .75em; }
+.slidev-layout.odsi-layout .lsrc .grid .card h3 { font-size: .72em; display: flex; align-items: center; gap: .4em; margin: 0 0 .2em; }
+.slidev-layout.odsi-layout .lsrc .grid .card .chip { width: 1.2em; height: 1.2em; font-size: .9em; margin: 0; flex: none; }
+.slidev-layout.odsi-layout .lsrc .grid .card p { font-size: .54em; line-height: 1.32; }
+.slidev-layout.odsi-layout .lsrc .steps { counter-reset: step; margin: .3em 0 0; padding: 0; list-style: none; }
+.slidev-layout.odsi-layout .lsrc .steps li { counter-increment: step; position: relative; padding-left: 1.9em; font-size: .6em; margin: .4em 0; line-height: 1.35; }
+.slidev-layout.odsi-layout .lsrc .steps li::before { content: counter(step); position: absolute; left: 0; top: .05em; width: 1.35em; height: 1.35em; border-radius: 50%; background: var(--teal); color: #fff; font-family: var(--serif); font-weight: 700; font-size: .85em; display: flex; align-items: center; justify-content: center; }
+.slidev-layout.odsi-layout .lsrc .fig { display: block; width: 100%; height: auto; border-radius: 10px; background: #fff; box-shadow: 0 6px 22px rgba(11,37,69,.14); margin: .15em auto 0; }
+.slidev-layout.odsi-layout .lsrc .dgm { display: block; width: 100%; height: auto; margin: .3em 0 0; }
+.lsrc .dgm text { font-family: var(--sans); fill: var(--ink); }
+.lsrc .dgm .cap { font-size: 15px; fill: var(--mute); }
+.lsrc .dgm .box { fill: #F4F8FB; stroke: #C6D8E5; stroke-width: 1.5; }
+.lsrc .dgm .ln { stroke: var(--teal); stroke-width: 2; fill: none; }
+.lsrc .dgm .bx { font-size: 18px; font-weight: 700; fill: var(--navy); }
+.lsrc .dgm .sb { font-size: 14px; fill: var(--mute); }
+.lsrc .dgm .hot { fill: #EAF4F3; stroke: var(--teal); stroke-width: 2.5; }
+.lsrc .dgm .hotlbl { font-size: 22px; font-weight: 700; fill: var(--teal); }
+.slidev-layout.odsi-layout .lsrc .statgrid { display: grid; grid-template-columns: repeat(3,1fr); gap: .5em; margin-top: .4em; }
+.slidev-layout.odsi-layout .lsrc .statgrid .cell { background: #F4F8FB; border-radius: 14px; padding: .7em .85em; box-shadow: 0 4px 16px rgba(11,37,69,.08); }
+.slidev-layout.odsi-layout .lsrc .statgrid .n { font-family: var(--serif); font-weight: 700; font-size: 1.7em; color: var(--teal); line-height: 1; display: block; }
+.slidev-layout.odsi-layout .lsrc .statgrid .n.warm { color: #CE422B; }
+.slidev-layout.odsi-layout .lsrc .statgrid .k { font-size: .5em; color: var(--mute); margin: .3em 0 0; line-height: 1.3; }
+.slidev-layout.odsi-layout .lsrc .rustmark { height: 2.6em; width: auto; flex: none; align-self: center; object-fit: contain; display: block; margin: .2em auto .3em; }
