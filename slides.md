@@ -344,8 +344,12 @@ routeAlias: infra
 
 ## Next-generation infrastructure
 
+Paying for processing, not for waiting
+
 <!--
-TODO notes.
+Part two is the orchestration layer: the machinery that notices a new Landsat or Sentinel-2 granule, waits for the ancillary data it needs, submits the processing job, watches it, retries it, and records what happened. This part of the system is not glamorous, and it is not where most of the money goes, but it is where most of our operational pain came from and it is the main thing standing between us and an affordable reprocessing campaign. The theme for this section is in the subtitle: we want to pay for processing, not for waiting.
+
+Sources: hls-nextgen-orchestration PR 7 docs/orchestration-design.md.
 -->
 
 ---
@@ -357,8 +361,25 @@ routeAlias: hurts
 
 ## What hurts in the current system
 
+<div class="flowdgm mt-1">
+  <div class="fbox hot"><b>Step Functions</b><small>wakes on a timer, polls every job every 30 to 60 s</small></div>
+  <div class="farrow">→</div>
+  <div class="fbox"><b>AWS Batch</b><small>one long job per granule: fmask, LaSRC, post-processing, upload</small></div>
+  <div class="farrow">→</div>
+  <div class="fbox hot"><b>RDS log database</b><small>always on, pruned to stay fast</small></div>
+</div>
+
+<div class="grid g2 mt-4" style="gap:.6rem">
+  <div class="card"><h3><span class="chip coral">1</span>Granules silently dropped</h3><p>Database timeouts before submission drop the job; timeouts afterwards leave finished work unrecorded and never retried.</p></div>
+  <div class="card"><h3><span class="chip coral">2</span>Polling cost and rate limits</h3><p>About 113 billed state transitions per granule, and AWS API limits at 10 to 20 thousand concurrent jobs.</p></div>
+  <div class="card"><h3><span class="chip coral">3</span>Spot risk on long jobs</h3><p>LaSRC is about half of Sentinel-2 runtime. An interruption late in a job throws away the most expensive work.</p></div>
+  <div class="card"><h3><span class="chip coral">4</span>History pruned away</h3><p>The audit trail needed for reprocessing and reconciliation is deleted to keep the database fast.</p></div>
+</div>
+
 <!--
-TODO notes.
+Here is the current system, simplified. A Step Functions state machine wakes up on a timer and polls every running Batch job every 30 to 60 seconds. Each granule runs as one long Batch job: fmask, LaSRC, post-processing and upload all in one. And every step writes to an always-on relational database. Four things hurt. First, and most serious: when the database times out under load, granules are silently dropped, or a job finishes and nobody records it, so it is never retried. Second, polling costs money and hits AWS rate limits once we have 10 to 20 thousand jobs in flight, which is exactly what a reprocessing campaign looks like. Third, because the job is one long unit, a Spot interruption near the end throws away the most expensive work. Fourth, we have to prune the database to keep it fast, which throws away the history we need to answer basic questions later.
+
+Sources: hls-nextgen-orchestration PR 7 docs/orchestration-design.md (Problems with the Current Architecture); docs/cost-analysis.md (113 transitions per granule).
 -->
 
 ---
@@ -370,8 +391,34 @@ routeAlias: new-design
 
 ## Event-driven, with S3 as the log
 
+<div class="flowdgm mt-1">
+  <div class="fbox cool"><b>Granule lands</b><small>S3 event, no timer</small></div>
+  <div class="farrow">→</div>
+  <div class="fbox"><b>Lambda</b><small>records it, checks ancillary data</small></div>
+  <div class="farrow">→</div>
+  <div class="fbox"><b>Batch on Spot</b><small>scales to zero</small></div>
+  <div class="farrow">→</div>
+  <div class="fbox"><b>EventBridge</b><small>job finished event</small></div>
+  <div class="farrow">→</div>
+  <div class="fbox"><b>Job monitor</b><small>reads the outcome</small></div>
+  <div class="farrow">→</div>
+  <div class="fbox ok"><b>S3 log</b><small>append-only, never pruned</small></div>
+</div>
+
+<div class="outcomes">
+  <span><b>Success, cloudy, low sun:</b> recorded as final states</span>
+  <span><b>Spot interruption:</b> retry queue, resubmitted automatically</span>
+  <span><b>Unexpected failure:</b> dead-letter queue, redriven after a fix</span>
+</div>
+
+<div class="band mt-4">The core principle: <b>S3 is the event store, the log and the coordination mechanism.</b> No database, no polling. Nothing runs while nothing is arriving.</div>
+
+<p class="foot-note">Prototype built with Claude as a coding assistant.</p>
+
 <!--
-TODO notes.
+The new design turns this around. Nothing runs on a timer. When a granule lands in S3, that event triggers a small Lambda function that records it and checks whether its ancillary data is there. If it is, the job goes to AWS Batch on Spot instances, which scale to zero when there is nothing to do. When the job finishes, AWS publishes an event, and a job monitor reads the outcome and writes it to an append-only log in S3. Successes, cloudy and low-sun-angle granules are recorded as final states. Spot interruptions go to a retry queue and are resubmitted automatically. Genuine failures go to a dead-letter queue, so a spike there means something is actually broken, and we can redrive them once it is fixed. The core principle is that S3 is the event store, the log and the coordination mechanism. No database and no polling. We built the prototype with Claude as a coding assistant.
+
+Sources: hls-nextgen-orchestration PR 7 docs/orchestration-design.md (Target Architecture, State Machine).
 -->
 
 ---
@@ -383,8 +430,32 @@ routeAlias: cost-table
 
 ## Orchestration cost, line by line
 
+<div class="cols mt-1" style="align-items:center">
+<div class="col" style="flex:1.7">
+<table>
+  <thead><tr><th>Annual cost</th><th>Current (polling)</th><th>New (event-driven)</th></tr></thead>
+  <tbody>
+    <tr><td>Step Functions</td><td>$15,518</td><td>not used</td></tr>
+    <tr><td>RDS database</td><td>$4,375</td><td>not used</td></tr>
+    <tr><td>Lambda</td><td>$205</td><td>~$2</td></tr>
+    <tr><td>S3 polling for ancillary data</td><td>~$60</td><td>~$0</td></tr>
+    <tr><td>S3 event store</td><td>not used</td><td>~$180</td></tr>
+    <tr><td>SQS and EventBridge</td><td>not used</td><td>~$15</td></tr>
+    <tr class="total"><td>Total</td><td>~$20,160</td><td>~$200</td></tr>
+  </tbody>
+</table>
+</div>
+<div class="col">
+  <div class="stat"><span class="n">~100×</span></div>
+  <p style="font-size:.85rem">cheaper to orchestrate the same 15,000 granules a day.</p>
+  <p style="font-size:.75rem;color:var(--mute)">The 2025 bill agrees: Step Functions $12.4k and RDS $8.3k.</p>
+</div>
+</div>
+
 <!--
-TODO notes.
+Here is what that means in dollars, line by line. The current system spends about $15,518 a year on Step Functions and $4,375 on the database, plus small amounts on Lambda and on S3 calls that poll for ancillary data: about $20,160 a year in total. The new design spends about $180 a year storing its log in S3 and about $15 on queues and events, roughly $200 a year. That is about a hundred times cheaper to orchestrate the same 15,000 granules a day. These are modeled figures from our cost analysis, and the 2025 bill backs them up: Step Functions cost $12.4k and the database $8.3k last year. I want to be honest about scale: twenty thousand dollars is not the biggest line in our budget. The bigger prize is what this does to reprocessing, which is two slides from now.
+
+Sources: hls-nextgen-orchestration docs/cost-analysis.md (Scheduled/Poll vs Event-Driven comparison); HLS_MCP_costs_breakdown_2025.csv (Step Functions $12,408, RDS $8,266).
 -->
 
 ---
@@ -396,8 +467,26 @@ routeAlias: polling
 
 ## Paying to ask "are you done yet?"
 
+<div class="mt-3">
+  <div class="hbar"><span class="lab">Real state changes in a job's life</span><div class="bar good" style="--w:10.6%">12</div></div>
+  <div class="hbar"><span class="lab">State transitions billed per granule</span><div class="bar" style="--w:100%">113</div></div>
+</div>
+
+<div class="cols mt-4">
+<div class="col">
+
+A 20 to 30 minute job is polled every 30 to 60 seconds. Every poll is a **wait, a Lambda call and a decision**, and each one is billed.
+
+</div>
+<div class="col">
+<div class="band" style="margin:0">Polling is <b>about $15,518 a year</b> in Step Functions alone. An event costs nothing until something actually happens.</div>
+</div>
+</div>
+
 <!--
-TODO notes.
+Why was the old system so expensive to run? Step Functions bills per state transition. A job's real life has about 12 of them: submitted, waiting, retried, succeeded or failed. But we were billed for about 113 per granule. The difference is polling. A job that runs 20 to 30 minutes gets checked every 30 to 60 seconds, and every check is a wait, a Lambda call and a decision, three billed transitions that tell us nothing new. We worked the 113 backwards from the actual spend, and it matches that polling pattern. In other words, we were paying to ask "are you done yet?" tens of times per granule, fifteen thousand granules a day. An event-driven design asks nothing. It just gets told when something happens.
+
+Sources: hls-nextgen-orchestration docs/cost-analysis.md (Where polling costs accumulate: $15,517.69/year, 1.7M transitions/day, about 113 per granule against about 12).
 -->
 
 ---
@@ -409,8 +498,28 @@ routeAlias: reprocessing
 
 ## A full reprocessing campaign
 
+<p style="margin-top:0">Orchestration cost to reprocess the full archive, about <strong>30M granules</strong> (for example, HLS v3):</p>
+
+<div class="mt-2">
+  <div class="hbar"><span class="lab">Current, at the full production rate</span><div class="bar" style="--w:100%">$85k</div></div>
+  <div class="hbar"><span class="lab">Current, ancillary data already available</span><div class="bar mid" style="--w:65%">$55k</div></div>
+  <div class="hbar"><span class="lab">New, event-driven</span><div class="bar good" style="--w:4.8%">~$4.1k</div></div>
+</div>
+
+<div class="cols mt-3">
+<div class="col"><div class="band" style="margin:0">From <b>$55–85k</b> to <b>about $4.1k</b>, and <b>no rate-limit ceiling</b> on how fast we can go.</div></div>
+<div class="col">
+  <div class="todo">
+    <div class="tag">Sean: confirm</div>
+    <p>The cost analysis gives $4.1k in one table and $2.7k in another. Which is right?</p>
+  </div>
+</div>
+</div>
+
 <!--
-TODO notes.
+This is the slide I would most like managers to remember. Reprocessing the full HLS archive, around 30 million granules, for example for an HLS version 3, would cost between 55 and 85 thousand dollars in orchestration alone on the current system, depending on whether the ancillary data is already available. On the new system it is about 4 thousand dollars. So $55–85k becomes about $4.1k. Just as important, the new design removes the rate-limit ceiling, so we can run a campaign as fast as we are willing to pay for compute, rather than as fast as the polling loop can keep up. And a later phase splits each job so fmask runs first: the 10 to 15 percent of Sentinel-2 granules that are too cloudy or have too low a sun angle exit early on a small instance, before the expensive LaSRC step.
+
+Sources: hls-nextgen-orchestration docs/cost-analysis.md (One-time full historical reprocessing); PR 7 docs/orchestration-design.md (rate limits, Job Splitting).
 -->
 
 ---
@@ -422,8 +531,19 @@ routeAlias: answers
 
 ## Questions we can now answer
 
+<div class="grid g2 mt-1" style="gap:.6rem">
+  <div class="card"><h3><span class="chip teal">?</span>Did every product reach LP DAAC?</h3><p>Compare our output log against the LP DAAC catalog, by date.</p></div>
+  <div class="card"><h3><span class="chip teal">?</span>Did we try every granule ESA and USGS published?</h3><p>Compare our input log against CMR, by date.</p></div>
+  <div class="card"><h3><span class="chip teal">?</span>How much is cloudy or low sun?</h3><p>Recorded as their own outcomes, not lumped in with failures.</p></div>
+  <div class="card"><h3><span class="chip teal">?</span>What fails, how often, and does retrying help?</h3><p>Every attempt and exit code, queryable with Athena.</p></div>
+</div>
+
+<div class="band mt-4">The full history is kept <b>indefinitely, for about $180 a year</b>. No database to prune, no extra service to run.</div>
+
 <!--
-TODO notes.
+Lower cost is only half of it. Because every state change is written to a log in S3 and never deleted, we can answer questions that today we simply cannot. Did every product we made reach LP DAAC? Did we at least attempt every granule that ESA and USGS published? How much of the archive is screened out as cloudy or low sun, as opposed to genuinely failing? What fails, how often, and does a retry fix it? Each of these becomes a query with Athena over S3, rather than a manual investigation. And the full history is kept indefinitely for about $180 a year, because S3 storage is cheap and there is no database to prune.
+
+Sources: hls-nextgen-orchestration PR 7 docs/orchestration-design.md (Analytics: Athena over S3 Inventory, reconciliation queries); docs/cost-analysis.md (S3 event store about $180/year).
 -->
 
 ---
@@ -435,8 +555,28 @@ routeAlias: phased
 
 ## Proven, then phased
 
+<div class="cols mt-1">
+<div class="col" style="flex:.9">
+  <div class="card" style="border-left:4px solid var(--green)">
+    <h3><span class="chip green">✓</span>Already proven</h3>
+    <p style="margin-bottom:.4rem!important">The HLS-VI historical backfill processed about <strong>30M granules</strong> on this same pattern.</p>
+    <p>The log never needed pruning, retries handled Spot interruptions cleanly, and weekly progress reports were a single query.</p>
+  </div>
+</div>
+<div class="col">
+<ol class="steps" style="counter-reset: step -1">
+  <li><strong>Phase 0, shadow.</strong> The new job monitor watches the current system read-only. Zero risk, real data from day one.</li>
+  <li><strong>Phase 1, event-driven.</strong> Retire Step Functions polling and the database.</li>
+  <li><strong>Phase 2, split jobs.</strong> fmask first, so cloudy granules exit early and Spot is safer.</li>
+  <li><strong>Phase 3, reconcile.</strong> Use the log to find what is missing and drive reprocessing.</li>
+</ol>
+</div>
+</div>
+
 <!--
-TODO notes.
+This is not a leap of faith. The same pattern already ran the HLS vegetation index historical backfill, about 30 million granules. The log never needed pruning, the retry design handled Spot interruptions cleanly, and when a bug fix caused unexpected failures we resubmitted every affected granule with a single query. Weekly progress reporting was a query too. We are rolling it out to HLS production in phases. Phase 0 runs the new job monitor in shadow mode alongside the current system, read-only, so we get real production data with zero risk. Phase 1 switches to event-driven orchestration and retires the polling and the database. Phase 2 splits jobs so fmask runs first. Phase 3 uses the log to reconcile the archive and drive reprocessing.
+
+Sources: hls-nextgen-orchestration PR 7 docs/orchestration-design.md (Prototype Validation, Implementation Sequencing).
 -->
 
 ---

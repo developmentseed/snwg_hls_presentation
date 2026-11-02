@@ -69,3 +69,57 @@ svg.loop .lbl.no { fill: var(--coral); }
 /* Compact list inside a card */
 .slidev-layout.odsi-layout ul.mini { margin: 0.3rem 0 0; padding-left: 1.1rem; }
 .slidev-layout.odsi-layout ul.mini li { font-size: 0.78rem; line-height: 1.35; margin: 0.12rem 0; }
+
+/* Row-of-boxes flow diagram (slides 12, 13):
+   <div class="flowdgm"><div class="fbox"><b>Title</b><small>detail</small></div><div class="farrow">→</div>...</div> */
+.flowdgm { display: flex; align-items: stretch; gap: 0.35rem; }
+.flowdgm .fbox {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.55rem 0.6rem;
+  border-radius: 10px;
+  background: #F4F8FB;
+  border: 1.5px solid #C6D8E5;
+  text-align: center;
+  line-height: 1.25;
+}
+.flowdgm .fbox b { font-size: 0.82rem; color: var(--navy); }
+.flowdgm .fbox small { display: block; margin-top: 0.2rem; font-size: 0.66rem; color: var(--mute); }
+.flowdgm .fbox.hot { background: #FBEEEC; border-color: var(--coral); }
+.flowdgm .fbox.cool { background: #EAF4F3; border-color: var(--teal); }
+.flowdgm .fbox.ok { background: #ECF6F2; border-color: var(--green); }
+.flowdgm .farrow { align-self: center; font-weight: 900; color: var(--teal); }
+
+/* Outcome chips under a flow diagram */
+.outcomes { display: flex; gap: 0.5rem; margin-top: 0.5rem; font-size: 0.7rem; }
+.outcomes span { flex: 1; padding: 0.3rem 0.55rem; border-radius: 8px; background: #F4F8FB; color: var(--ink); }
+.outcomes b { color: var(--navy); }
+
+/* Labelled horizontal bars (slides 15, 16):
+   <div class="hbar"><span class="lab">label</span><div class="bar" style="--w:40%">value</div></div> */
+.hbar { display: grid; grid-template-columns: 13rem 1fr; align-items: center; gap: 0.7rem; margin: 0.55rem 0; }
+.hbar .lab { font-size: 0.8rem; line-height: 1.3; color: var(--ink); }
+.hbar .bar {
+  width: var(--w);
+  min-width: 4.2rem;
+  height: 1.9rem;
+  display: flex;
+  align-items: center;
+  padding: 0 0.6rem;
+  border-radius: 6px;
+  background: var(--coral);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+.hbar .bar.good { background: var(--green); }
+.hbar .bar.mid { background: #E58A7D; }
+
+/* Small footnote line under a slide's content */
+.slidev-layout.odsi-layout p.foot-note { font-size: 0.7rem; color: var(--mute); margin-top: 0.6rem; }
+
+/* Bold total row in a cost table */
+.slidev-layout.odsi-layout tr.total td { font-weight: 700; color: var(--navy); background: #DCEBF4; border-top: 2px solid var(--navy); }
