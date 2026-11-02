@@ -1,0 +1,53 @@
+@import './odsi.css';
+
+/* Deck-specific styles go here. The ODSI theme and its components
+   (card, chip, band, ba, stat, steps, ask, todo) live in odsi.css. */
+
+/* Row of big numbers on white cards: <div class="statrow"><div class="cell">
+   <span class="n">30%</span><span class="k">caption</span></div>...</div> */
+.statrow { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 0.7rem; }
+
+.statrow .cell {
+  background: #F4F8FB;
+  border-radius: 14px;
+  padding: 0.75rem 0.9rem;
+  box-shadow: 0 4px 16px rgba(11, 37, 69, 0.08);
+}
+
+.statrow .n {
+  display: block;
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 2.3rem;
+  line-height: 1;
+  color: var(--teal);
+}
+
+.statrow .n.warm { color: var(--coral); }
+.slidev-layout.odsi-layout .statrow .k { display: block; font-size: 0.75rem; line-height: 1.35; color: var(--mute); margin-top: 0.35rem; }
+
+/* Single stacked bar: <div class="spendbar"><div style="--w:53%" class="ec2">..</div>...</div> */
+.spendbar {
+  display: flex;
+  height: 1.7rem;
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.spendbar > div { width: var(--w); display: flex; align-items: center; padding: 0 0.6rem; white-space: nowrap; }
+.spendbar .ec2 { background: var(--navy); }
+.spendbar .s3 { background: var(--teal); }
+.spendbar .other { background: var(--mute); }
+
+.spendcap { font-size: 0.72rem !important; color: var(--mute); margin: 0.35rem 0 0 !important; }
+
+/* Compact five-up goal cards */
+.grid.g5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.6rem; }
+.slidev-layout.odsi-layout .g5 .card h3 { font-size: 0.92rem; flex-direction: column; align-items: flex-start; gap: 0.35rem; }
+.slidev-layout.odsi-layout .g5 .card p { font-size: 0.74rem; }
+.card.trigger { background: var(--navy); }
+.slidev-layout.odsi-layout .card.trigger h3 { color: #fff; }
+.slidev-layout.odsi-layout .card.trigger p { color: var(--ice); }

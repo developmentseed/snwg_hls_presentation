@@ -46,6 +46,11 @@ for (let n = 1; n <= slides.length; n++) {
           out.push(`${describe(el)} svg text ${(r.height / scale).toFixed(1)}px < ${minText}px`)
         continue
       }
+      // content cut off inside a box that hides its overflow
+      const style = getComputedStyle(el)
+      if ((style.overflow + style.overflowX + style.overflowY).includes('hidden') &&
+          (el.scrollWidth > el.clientWidth + tol || el.scrollHeight > el.clientHeight + tol))
+        out.push(`${describe(el)} clips its content`)
       const over = [
         frame.left - r.left, r.right - frame.right,
         frame.top - r.top, r.bottom - frame.bottom,
