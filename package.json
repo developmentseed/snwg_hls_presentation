@@ -1,0 +1,25 @@
+{
+  "name": "snwg-10yr-slides",
+  "private": true,
+  "scripts": {
+    "dev": "slidev slides.md",
+    "build": "slidev build slides.md --out dist",
+    "export": "slidev export slides.md",
+    "lint": "node scripts/lint-deck.mjs slides.md",
+    "overflow": "node scripts/check-overflow.mjs --url http://localhost:3031",
+    "test": "node --test scripts/"
+  },
+  "devDependencies": {
+    "@slidev/cli": "^0.50.0",
+    "@slidev/theme-default": "^0.25.0",
+    "playwright-chromium": "^1.64.1"
+  },
+  "dependencies": {
+    "@fontsource/fraunces": "^5.0.0",
+    "@fontsource/inter": "^5.0.0",
+    "@fontsource/jetbrains-mono": "^5.0.0"
+  },
+  "overrides": {
+    "fuse.js": "7.1.0"
+  }
+}

@@ -3,3 +3,4 @@ dist/
 .DS_Store
 .slidev/
 .superpowers/
+.slidev-dev.log

@@ -1,0 +1,123 @@
+{
+  "slideCount": 38,
+  "aliases": [
+    "title",
+    "glance",
+    "why-now",
+    "goals",
+    "lasrc",
+    "lasrc-sits",
+    "chose-espa",
+    "science-vs-prod",
+    "espa-codebase",
+    "production-grade",
+    "community",
+    "why-rust",
+    "five-months",
+    "agents",
+    "loop",
+    "foundation",
+    "suite",
+    "suite-does",
+    "one-comparison",
+    "humans",
+    "four-classes",
+    "more-correct",
+    "where-now",
+    "whats-next",
+    "infra",
+    "hurts",
+    "new-design",
+    "cost-table",
+    "polling",
+    "reprocessing",
+    "answers",
+    "phased",
+    "composites",
+    "snwg",
+    "patterns",
+    "self-check",
+    "downstream",
+    "takeaways"
+  ],
+  "banned": [
+    "OPERA",
+    "NISAR",
+    "TEMPO",
+    "ICESat",
+    "GEOS",
+    "HySDS",
+    "LANCE",
+    "FIRMS",
+    "MWOW",
+    "GABAN",
+    "PBL",
+    "SatCORPS",
+    "OB.DAAC",
+    "DSWx",
+    "DISP"
+  ],
+  "pins": {
+    "glance": [
+      "2020",
+      "15,000"
+    ],
+    "goals": [
+      "$240k"
+    ],
+    "five-months": [
+      "5 to 6"
+    ],
+    "cost-table": [
+      "$15,518",
+      "$4,375",
+      "$20,160",
+      "$200"
+    ],
+    "polling": [
+      "113",
+      "12",
+      "$15,518"
+    ],
+    "reprocessing": [
+      "30M",
+      "$55–85k",
+      "$4.1k"
+    ],
+    "phased": [
+      "30M"
+    ],
+    "takeaways": [
+      "$20,160",
+      "$200",
+      "$55–85k",
+      "$4.1k",
+      "5–6 month",
+      "modeled"
+    ],
+    "where-now": [
+      "353",
+      "5 DN",
+      "30%",
+      "7%"
+    ]
+  },
+  "namesAllowed": [
+    "downstream"
+  ],
+  "forbid": {
+    "patterns": [
+      "Not specific to any one team",
+      "in one case",
+      "in one documented case"
+    ],
+    "cost-table": [
+      "bill agrees",
+      "backs them up"
+    ],
+    "takeaways": [
+      "fell from",
+      "took orchestration"
+    ]
+  }
+}
