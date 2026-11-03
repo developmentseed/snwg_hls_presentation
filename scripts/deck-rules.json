@@ -1,5 +1,5 @@
 {
-  "slideCount": 37,
+  "slideCount": 38,
   "aliases": [
     "title",
     "glance",
@@ -33,6 +33,7 @@
     "reprocessing",
     "answers",
     "phased",
+    "composites",
     "snwg",
     "patterns",
     "self-check",

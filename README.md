@@ -1,7 +1,7 @@
 # Finding Efficiencies in HLS Production
 
-A 37-slide [Slidev](https://sli.dev) deck in the ODSI style. With the full LaSRC
-section it runs about 43 minutes; see the timing note below. The
+A 38-slide [Slidev](https://sli.dev) deck in the ODSI style. With the full LaSRC
+section it runs about 44 minutes; see the timing note below. The
 audience is NASA managers and leads of other SNWG solutions.
 
 ## What the deck argues
@@ -27,7 +27,7 @@ the coding assistant for the new architecture prototype. The validation
 suite and the engineers made the results trustworthy.
 
 No slide or speaker note names another solution as having a problem. Slide
-36 names downstream users of HLS only, to show that HLS gains flow on to
+37 names downstream users of HLS only, to show that HLS gains flow on to
 them. `npm run lint` enforces this.
 
 ## Slides
@@ -65,12 +65,13 @@ them. `npm run lint` enforces this.
 |  | 29 | Paying to ask "are you done yet?" |
 |  | 30 | A full reprocessing campaign |
 |  | 31 | Questions we can now answer |
-|  | 32 | Proven, then phased |
-| Part three: other SNWG solutions | 33 | Applying this to other SNWG solutions (section) |
-|  | 34 | Patterns we see |
-|  | 35 | Questions to ask about your own system |
-|  | 36 | HLS gains carry downstream |
-|  | 37 | What we'd like you to take away |
+|  | 32 | Tested on new solutions |
+|  | 33 | The monthly composites run on it too |
+| Part three: other SNWG solutions | 34 | Applying this to other SNWG solutions (section) |
+|  | 35 | Patterns we see |
+|  | 36 | Questions to ask about your own system |
+|  | 37 | HLS gains carry downstream |
+|  | 38 | What we'd like you to take away |
 
 Every slide has speaker notes ending in a `Sources:` line. The LaSRC slides
 (6–24) and their notes are copied verbatim from
@@ -78,8 +79,8 @@ developmentseed/lasrc_rust_presentation, slides 2–24 except slides 6, 8, 22 an
 additions: card E on slide 9 (adding GDAS to the C code), drawn from
 slides 6 and 8; and slide 23 carries the "Why this number matters" card
 and note from the original's performance slide. The notes total about
-5,980 words, about 43 minutes at 140 words a minute: setup 3.8, LaSRC 27.5,
-infrastructure 7.1, SNWG 4.4. That is well over the 20–25 minute slot, so
+6,160 words, about 44 minutes at 140 words a minute: setup 3.8, LaSRC 27.5,
+infrastructure 8.3, SNWG 4.4. That is well over the 20–25 minute slot, so
 part one needs cutting, either slides or the spoken script.
 
 ## Before presenting
@@ -88,15 +89,15 @@ Each item below is a dashed "Sean: …" box on the slide itself. Resolve it,
 then remove the box.
 
 - [ ] **Slide 30:** the cost analysis gives $4.1k for reprocessing in one table
-      and $2.7k in another. Confirm which. $4.1k also appears on slide 37
+      and $2.7k in another. Confirm which. $4.1k also appears on slide 38
       and in this README, and is pinned on both slides in
       `scripts/deck-rules.json`; change all of them together.
-- [ ] **Slide 37:** what exactly we offer (reviews, office hours, shared
+- [ ] **Slide 38:** what exactly we offer (reviews, office hours, shared
       templates) and contact details.
 
 Two open questions without a box on any slide:
 
-- **Slide 34 rows 2, 3 and 5** (long jobs on on-demand instances, always-on
+- **Slide 35 rows 2, 3 and 5** (long jobs on on-demand instances, always-on
   servers, homemade audit scripts) are evidenced by one team's public code
   only (see `docs/research/snwg-solutions.md`). With that team in the room,
   decide whether to keep, generalize or drop them.
@@ -127,10 +128,10 @@ npm run overflow          # nothing outside the frame, clipped, or too small
 
 `scripts/lint-deck.mjs` checks `slides.md` against `scripts/deck-rules.json`:
 
-- exactly 37 slides, with their `routeAlias` values in order
+- exactly 38 slides, with their `routeAlias` values in order
 - every note has at least 40 words and a `Sources:` line
 - no em dashes
-- no other SNWG solution named in any note, or on any slide except 36
+- no other SNWG solution named in any note, or on any slide except 37
   (case-insensitive, so repo slugs like `opera-sds-pcm` are caught too)
 - the headline figures (pins) are present on every slide that uses them
 - no phrase that misstates the evidence (`forbid` in the rules), e.g.
@@ -144,7 +145,7 @@ server. It reports elements outside the slide, content clipped by
 ## Exporting
 
 ```sh
-npx slidev export slides.md --output slides.pdf                 # 37 pages
+npx slidev export slides.md --output slides.pdf                 # 38 pages
 npx slidev export slides.md --format png --output png           # one PNG per slide
 ```
 
