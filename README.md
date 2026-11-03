@@ -2,7 +2,7 @@
 
 A 38-slide [Slidev](https://sli.dev) deck in the ODSI style. With the full LaSRC
 section it runs about 44 minutes; see the timing note below. The
-audience is NASA managers and leads of other SNWG solutions.
+audience is NASA SNWG associates and leads of other SNWG solutions.
 
 ## What the deck argues
 
