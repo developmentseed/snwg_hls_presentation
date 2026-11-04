@@ -778,6 +778,42 @@ Sources: developmentseed/lasrc_rust_presentation (slide 21, "Where we are now", 
 
 ---
 layout: odsi
+routeAlias: lasrc-savings
+---
+
+# Cost
+
+## What 30% faster is worth annually
+
+<div class="cols mt-1" style="align-items:center">
+<div class="col" style="flex:1.7">
+<table>
+  <thead><tr><th>Step</th><th>Value</th></tr></thead>
+  <tbody>
+    <tr><td>2025 EC2 instance compute cost</td><td>$240,404</td></tr>
+    <tr><td>LaSRC share of compute, Sentinel-2 / Landsat (measured)</td><td>54.6% / 32.8%</td></tr>
+    <tr><td>LaSRC share of all compute, weighted 58% Sentinel-2 granules</td><td>~45%</td></tr>
+    <tr><td>Saving if LaSRC runs 30% faster on both sensors</td><td>~$33k</td></tr>
+    <tr><td>Saving if only Sentinel-2 benefits</td><td>~$23k</td></tr>
+    <tr class="total"><td>Annual EC2 reduction</td><td>~$23–33k</td></tr>
+  </tbody>
+</table>
+</div>
+<div class="col">
+  <div class="stat"><span class="n">$23–33k</span></div>
+  <p style="font-size:.85rem">a year, about <strong>10–14%</strong> of EC2 spend, from targeted tweaks only.</p>
+  <p style="font-size:.75rem;color:var(--mute)">EC2 instances time only.  Our upcoming structural performance work will likely reduce this cost significantly more.</p>
+</div>
+</div>
+
+<!--
+What does 30% faster mean in money? HLS spent about $240k on EC2 instances in 2025. We measured how much of each pipeline's runtime is LaSRC: about 55% for Sentinel-2 and about 33% for Landsat. Sentinel-2 is about 58% of granules, so LaSRC is roughly 45% of all compute. Cutting that by 30% saves about 13.6% of the EC2 bill, about $33k a year. If only the Sentinel-2 pipeline benefits, it is about $23k. So about $23 to 33 thousand a year, and that is from targeted tweaks made while the priority was matching C exactly. If someone reads "30% faster" as 1.3 times the throughput rather than 30% less runtime, the range is about $18 to 25 thousand.
+
+Sources: HLS_MCP_costs_breakdown_2025.csv (EC2-Instances $240,404 for 2025); LaSRC compute share measured across HLS pipelines (Sentinel-2 54.6%, n=423,090 of 559,038 pipelines; Landsat 32.8%, n=49,837 of 53,065); 58% Sentinel-2 granule share from docs/superpowers/specs/2026-11-02-hls-efficiencies-deck-design.md; 30% runtime from developmentseed/lasrc_rust_presentation (validation run 2026-09-22).
+-->
+
+---
+layout: odsi
 routeAlias: whats-next
 ---
 
@@ -1095,6 +1131,47 @@ Composites to support the rest of the SNWG ecosystem.
 That is the HLS story. For the last part I want to turn it around, because the reason we are in this room is not to show off HLS. It is that I suspect many of your solutions are paying for the same problems we were. I want to be careful here. Everything in this section comes from public code and documentation, it describes patterns rather than any one team, and I am not going to name anyone. If something sounds familiar, that is the point, and we would love to talk about it.
 
 Sources: docs/research/snwg-solutions.md.
+-->
+
+---
+layout: odsi
+routeAlias: savings-summary
+---
+
+# Savings gains
+
+## What we will save and what we can share
+
+<div class="cols mt-1">
+<div class="col" style="flex:1.25">
+<table>
+  <thead><tr><th>Improvement</th><th>Annual saving</th></tr></thead>
+  <tbody>
+    <tr><td>Rust LaSRC, 30% faster (EC2, projected)</td><td>~$23–33k</td></tr>
+    <tr><td>Nextgen orchestration, $20,160 to ~$200 (modeled)</td><td>~$20k</td></tr>
+    <tr class="total"><td>Combined</td><td>~$43–53k</td></tr>
+  </tbody>
+</table>
+<p style="font-size:.78rem;margin-top:.6rem!important">About <strong>10–12%</strong> of the 2025 AWS bill, before further LaSRC optimization.</p>
+</div>
+<div class="col">
+  <div class="card">
+    <h3><span class="chip teal">→</span>What we can share</h3>
+    <ul style="margin:.3rem 0 0;padding-left:1.1rem">
+      <li style="font-size:.8rem"><strong>Validation first modernization</strong> a reference output and validation suite allow agents to port</li>
+      <li style="font-size:.8rem"><strong>Our job monitoring library</strong> fully event-driven with S3 as the log.  Already demonstrated reuse for HLS-VI and the BDEC composites</li>
+      <li style="font-size:.8rem"><strong>Cost models:</strong> cost per granule, and reprocessing costed before it runs</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<div class="band mt-3">These savings came from general approaches, not HLS-specific tricks. <b>We want to assist other SNWG solutions to apply them.</b></div>
+
+<!--
+Before we look outward, here is what the two pieces of work add up to. The Rust LaSRC port is about 30% faster, which on 2025 EC2 spend is worth about $23 to 33 thousand a year. The next-generation orchestration is modeled to take orchestration from about $20,160 a year to about $200, so about $20 thousand a year. Together that is roughly $43 to 53 thousand a year, about 10 to 12 percent of our 2025 AWS bill, and the LaSRC number is before any structural performance work. Separately, the orchestration overhead of a full reprocessing campaign drops from $55 to 85 thousand to about $4.1 thousand; that is overhead only, the compute for a reprocessing is much larger and separate. The more important point is on the right. None of this depended on anything unique to HLS. It came from three approaches: modernize legacy code with a validation suite as ground truth and agents doing the porting; an event-driven job monitor with S3 as the log, which we have already reused for HLS-VI and the monthly composites; and cost models that tell you what a granule or a campaign costs before you commit. We would like to help other SNWG solutions do the same, and the rest of this section is about where to look.
+
+Sources: slide 24 (LaSRC EC2 saving, HLS_MCP_costs_breakdown_2025.csv EC2-Instances $240,404); hls-nextgen-orchestration PR 7 docs/cost-analysis.md (orchestration $20,160 to ~$200 a year; reprocessing orchestration $55–85k to ~$4.1k); 2025 gross AWS bill $452,535; slide 34 (library reuse).
 -->
 
 ---

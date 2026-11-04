@@ -1,5 +1,5 @@
 {
-  "slideCount": 38,
+  "slideCount": 40,
   "aliases": [
     "title",
     "glance",
@@ -24,6 +24,7 @@
     "four-classes",
     "more-correct",
     "where-now",
+    "lasrc-savings",
     "whats-next",
     "infra",
     "hurts",
@@ -35,6 +36,7 @@
     "phased",
     "composites",
     "snwg",
+    "savings-summary",
     "patterns",
     "self-check",
     "downstream",
@@ -100,6 +102,19 @@
       "5 DN",
       "30%",
       "7%"
+    ],
+    "lasrc-savings": [
+      "$240,404",
+      "$23–33k",
+      "54.6%",
+      "32.8%"
+    ],
+    "savings-summary": [
+      "$23–33k",
+      "$20,160",
+      "$43–53k",
+      "$55–85k",
+      "$4.1k"
     ]
   },
   "namesAllowed": [

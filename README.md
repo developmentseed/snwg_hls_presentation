@@ -1,7 +1,7 @@
 # Finding Efficiencies in HLS Production
 
-A 38-slide [Slidev](https://sli.dev) deck in the ODSI style. With the full LaSRC
-section it runs about 44 minutes; see the timing note below. The
+A 40-slide [Slidev](https://sli.dev) deck in the ODSI style. With the full LaSRC
+section it runs about 46 minutes; see the timing note below. The
 audience is NASA SNWG associates and leads of other SNWG solutions.
 
 ## What the deck argues
@@ -14,7 +14,8 @@ cutting cost in two places:
    coding agents was a 5–6 month job nobody could prioritize. With an
    automated validation suite (353 granules × 7 bands, all within 5 DN) as
    the check, it became practical. The result is 30% faster with 7% less
-   memory. Slides 6–24 are copied verbatim from the LaSRC Rust talk (its slides 2–24 except 6, 8, 22 and 23).
+   memory, worth about $23–33k a year in EC2 (slide 24). Slides 6–23 and
+   25 are copied verbatim from the LaSRC Rust talk (its slides 2–24 except 6, 8, 22 and 23).
 2. **Next-generation infrastructure.** An event-driven design with S3 as the
    log replaces Step Functions polling and the RDS log database.
    Orchestration drops from about $20,160 a year to about $200. A full
@@ -27,7 +28,7 @@ the coding assistant for the new architecture prototype. The validation
 suite and the engineers made the results trustworthy.
 
 No slide or speaker note names another solution as having a problem. Slide
-37 names downstream users of HLS only, to show that HLS gains flow on to
+39 names downstream users of HLS only, to show that HLS gains flow on to
 them. `npm run lint` enforces this.
 
 ## Slides
@@ -57,30 +58,32 @@ them. `npm run lint` enforces this.
 |  | 21 | Four main classes of issues |
 |  | 22 | Sometimes the model's choices were more correct than the ESPA codebase |
 |  | 23 | Where we are now |
-|  | 24 | What is next, in priority order |
-| Part two: infrastructure | 25 | Next-generation infrastructure (section) |
-|  | 26 | What hurts in the current system |
-|  | 27 | Event-driven, with S3 as the log |
-|  | 28 | Orchestration cost, line by line |
-|  | 29 | Paying to ask "are you done yet?" |
-|  | 30 | A full reprocessing campaign |
-|  | 31 | Questions we can now answer |
-|  | 32 | Tested on new solutions |
-|  | 33 | The monthly composites run on it too |
-| Part three: other SNWG solutions | 34 | Applying this to other SNWG solutions (section) |
-|  | 35 | Patterns we see |
-|  | 36 | Questions to ask about your own system |
-|  | 37 | HLS gains carry downstream |
-|  | 38 | What we'd like you to take away |
+|  | 24 | What 30% faster is worth a year |
+|  | 25 | What is next, in priority order |
+| Part two: infrastructure | 26 | Next-generation infrastructure (section) |
+|  | 27 | What hurts in the current system |
+|  | 28 | Event-driven, with S3 as the log |
+|  | 29 | Orchestration cost, line by line |
+|  | 30 | Paying to ask "are you done yet?" |
+|  | 31 | A full reprocessing campaign |
+|  | 32 | Questions we can now answer |
+|  | 33 | Tested on new solutions |
+|  | 34 | The monthly composites run on it too |
+| Part three: other SNWG solutions | 35 | Applying this to other SNWG solutions (section) |
+|  | 36 | What we save, and what we can share |
+|  | 37 | Patterns we see |
+|  | 38 | Questions to ask about your own system |
+|  | 39 | HLS gains carry downstream |
+|  | 40 | What we'd like you to take away |
 
 Every slide has speaker notes ending in a `Sources:` line. The LaSRC slides
-(6–24) and their notes are copied verbatim from
+(6–23 and 25) and their notes are copied verbatim from
 developmentseed/lasrc_rust_presentation, slides 2–24 except slides 6, 8, 22 and 23. Two
 additions: card E on slide 9 (adding GDAS to the C code), drawn from
 slides 6 and 8; and slide 23 carries the "Why this number matters" card
 and note from the original's performance slide. The notes total about
-6,160 words, about 44 minutes at 140 words a minute: setup 3.8, LaSRC 27.5,
-infrastructure 8.3, SNWG 4.4. That is well over the 20–25 minute slot, so
+6,490 words, about 46 minutes at 140 words a minute: setup 3.8, LaSRC 28.3,
+infrastructure 8.3, SNWG 6.0. That is well over the 20–25 minute slot, so
 part one needs cutting, either slides or the spoken script.
 
 ## Before presenting
@@ -88,16 +91,16 @@ part one needs cutting, either slides or the spoken script.
 Each item below is a dashed "Sean: …" box on the slide itself. Resolve it,
 then remove the box.
 
-- [ ] **Slide 30:** the cost analysis gives $4.1k for reprocessing in one table
-      and $2.7k in another. Confirm which. $4.1k also appears on slide 38
+- [ ] **Slide 31:** the cost analysis gives $4.1k for reprocessing in one table
+      and $2.7k in another. Confirm which. $4.1k also appears on slides 36 and 40
       and in this README, and is pinned on both slides in
       `scripts/deck-rules.json`; change all of them together.
-- [ ] **Slide 38:** what exactly we offer (reviews, office hours, shared
+- [ ] **Slide 40:** what exactly we offer (reviews, office hours, shared
       templates) and contact details.
 
 Two open questions without a box on any slide:
 
-- **Slide 35 rows 2, 3 and 5** (long jobs on on-demand instances, always-on
+- **Slide 37 rows 2, 3 and 5** (long jobs on on-demand instances, always-on
   servers, homemade audit scripts) are evidenced by one team's public code
   only (see `docs/research/snwg-solutions.md`). With that team in the room,
   decide whether to keep, generalize or drop them.
@@ -128,10 +131,10 @@ npm run overflow          # nothing outside the frame, clipped, or too small
 
 `scripts/lint-deck.mjs` checks `slides.md` against `scripts/deck-rules.json`:
 
-- exactly 38 slides, with their `routeAlias` values in order
+- exactly 40 slides, with their `routeAlias` values in order
 - every note has at least 40 words and a `Sources:` line
 - no em dashes
-- no other SNWG solution named in any note, or on any slide except 37
+- no other SNWG solution named in any note, or on any slide except 39
   (case-insensitive, so repo slugs like `opera-sds-pcm` are caught too)
 - the headline figures (pins) are present on every slide that uses them
 - no phrase that misstates the evidence (`forbid` in the rules), e.g.
@@ -145,7 +148,7 @@ server. It reports elements outside the slide, content clipped by
 ## Exporting
 
 ```sh
-npx slidev export slides.md --output slides.pdf                 # 38 pages
+npx slidev export slides.md --output slides.pdf                 # 40 pages
 npx slidev export slides.md --format png --output png           # one PNG per slide
 ```
 
