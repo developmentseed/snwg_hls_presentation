@@ -823,10 +823,7 @@ routeAlias: whats-next
 
 <div class="lsrc">
 <ol class="steps" style="margin-top:.25em">
-  <li><strong>GDAS auxiliary data.</strong> The largest rationale for
-    undertaking the port was to reduce the effort of switching to GDAS based
-    auxiliary data for the HLS low-latency solution. We begin testing and evaluating that code path in this PI.</li>
-  <li><strong>Structural refactoring.</strong> The Rust port currently
+    <li><strong>Structural refactoring.</strong> The Rust port currently
     mostly mirrors the original ESPA C structure. We will incrementally restructure it to improve maintainability and to make it easier for outside contributors to work on.</li>
   <li><strong>Performance optimization.</strong> Beyond the targeted tweaks already made, there is a large space of changes available to reduce runtime, resource utilization and overall processing cost.</li>
   <li><strong>Collaborative HLS Science + Production team
@@ -834,6 +831,9 @@ routeAlias: whats-next
   <li><strong>Production deployment</strong> After the finalized Rust port
     has gotten approval from the science team we'll integrate it into
     production.</li>
+<li><strong>GDAS auxiliary data.</strong> The largest rationale for
+    undertaking the port was to reduce the effort of switching to GDAS based
+    auxiliary data for the HLS low-latency solution. We begin testing and evaluating that code path in this PI.</li>
 </ol>
 <div class="band" style="margin-top:.55em">For all these steps, the time to
   implement and test is <b>drastically lower than the same work would take
