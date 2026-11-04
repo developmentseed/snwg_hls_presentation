@@ -7,9 +7,16 @@ test('manual-only workflow passes', () => {
   assert.deepEqual(publishProblems('on:\n  workflow_dispatch:\njobs: {}\n'), [])
 })
 
-test('every push syntax is caught', () => {
-  for (const on of ['on: push', 'on: [push, workflow_dispatch]',
-    'on: {push: {branches: [main]}}', 'on:\n  push:\n    branches: [main]'])
+test('push to main only is allowed', () => {
+  for (const on of ['on: {push: {branches: [main]}, workflow_dispatch: {}}',
+    'on:\n  push:\n    branches: [main]\n  workflow_dispatch:'])
+    assert.deepEqual(publishProblems(`${on}\njobs: {}\n`), [], on)
+})
+
+test('push to any other branch, or every branch, is caught', () => {
+  for (const on of ['on: push', 'on: [push, workflow_dispatch]', 'on: {push: {}}',
+    'on: {push: {branches: [main, dev]}}', 'on: {push: {branches: ["**"]}}',
+    'on: {push: {branches-ignore: [dev]}}', 'on:\n  push:\n    branches: [feat/x]'])
     assert.notDeepEqual(publishProblems(`${on}\njobs: {}\n`), [], on)
 })
 

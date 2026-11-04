@@ -3,14 +3,19 @@ import { parse as parseYaml } from 'yaml'
 
 const escape = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-// A workflow may only run when started by hand. Returns one line per problem.
+// A workflow may run when started by hand, or on a push to main and nothing
+// else. Returns one line per problem.
 export function publishProblems(yamlText) {
   const doc = parseYaml(yamlText) ?? {}
   // YAML 1.1 readers may turn the `on` key into `true`
   let on = doc.on ?? doc[true]
   if (typeof on === 'string') on = [on]
   const triggers = Array.isArray(on) ? on : Object.keys(on ?? {})
-  return triggers.filter(t => t !== 'workflow_dispatch').map(t => `triggers on ${t}`)
+  const branches = Array.isArray(on) ? null : on?.push?.branches
+  const mainOnly = Array.isArray(branches) && branches.length === 1 && branches[0] === 'main'
+  return triggers
+    .filter(t => t !== 'workflow_dispatch' && !(t === 'push' && mainOnly))
+    .map(t => t === 'push' ? 'triggers on push to branches other than main' : `triggers on ${t}`)
 }
 
 // First banned name in text, as written, or null. Case-insensitive, whole word

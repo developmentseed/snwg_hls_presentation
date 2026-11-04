@@ -139,7 +139,8 @@ npm run overflow          # nothing outside the frame, clipped, or too small
 - the headline figures (pins) are present on every slide that uses them
 - no phrase that misstates the evidence (`forbid` in the rules), e.g.
   savings stated as already achieved
-- every workflow in `.github/workflows/` runs only on `workflow_dispatch`
+- every workflow in `.github/workflows/` runs only by hand (`workflow_dispatch`)
+  or on a push to `main`, never on other branches or a schedule
 
 `scripts/check-overflow.mjs` (Playwright) loads each slide from the dev
 server. It reports elements outside the slide, content clipped by
@@ -154,13 +155,15 @@ npx slidev export slides.md --format png --output png           # one PNG per sl
 
 A current `slides.pdf` is committed.
 
-## Publishing is manual
+## Publishing
 
-The deck contains NASA AWS cost figures and an unmerged architecture design
-(hls-nextgen-orchestration PR 7). The GitHub Pages workflow
-(`.github/workflows/deploy.yml`) only runs when started by hand
-(`workflow_dispatch`). Get clearance before you run it or share the PDF
-outside the team.
+The GitHub Pages workflow (`.github/workflows/deploy.yml`) publishes the deck
+on every push to `main`, and can also be run by hand from the Actions tab. The
+site is at http://developmentseed.org/snwg_hls_presentation/.
+
+Anything merged to `main` is public within minutes. The deck contains NASA
+AWS cost figures and an unmerged architecture design (hls-nextgen-orchestration
+PR 7), so work on a branch and merge only what is cleared to share.
 
 ## Sources
 
