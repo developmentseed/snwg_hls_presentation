@@ -53,7 +53,7 @@ Harmonized Landsat and Sentinel-2 turns two missions into **one consistent 30 m 
 </div>
 <div class="col">
 <div class="band" style="margin:0">
-HLS is also an input. <b>Several other SNWG solutions build on top of it</b>so any improvements we make in latency and stability are shared with other products.
+HLS is also an input. <b>Several other SNWG solutions build on top of it</b> so any improvements we make in latency and stability are shared with other products.
 </div>
 </div>
 </div>
