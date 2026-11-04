@@ -149,9 +149,13 @@ server. It reports elements outside the slide, content clipped by
 ## Exporting
 
 ```sh
-npx slidev export slides.md --output slides.pdf                 # 40 pages
-npx slidev export slides.md --format png --output png           # one PNG per slide
+npx slidev export slides.md --format png --scale 2 --output png   # one PNG per slide
+swift scripts/png2pdf.swift png 40 slides.pdf                     # 40 pages (macOS)
 ```
+
+Don't use `slidev export` straight to PDF: Chrome's print engine draws the
+cards' shadows as grey blocks. The PDF built from screenshots matches the
+deck, but its text can't be selected or searched.
 
 A current `slides.pdf` is committed.
 
